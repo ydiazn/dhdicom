@@ -1,0 +1,12 @@
+*.pyc
+*~
+
+# python virtual environment
+venv
+
+# Images sample
+images
+
+# Visual studio code
+*.code-workspace
+.vscode

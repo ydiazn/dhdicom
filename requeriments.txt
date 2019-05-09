@@ -1,0 +1,12 @@
+# DICOM
+pydicom
+
+# Images
+pillow
+
+# Tests
+pytest 
+
+# Math
+numpy
+matplotlib

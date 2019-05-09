@@ -22,6 +22,8 @@ install_project_dependencies:
  stage: install
  script:
   - apt-get install python-gdcm
+  - apt-get install python3tk
+  - python3 -m venv venv
   - pip install -r requeriments
  tags: 
   - install

@@ -2,8 +2,11 @@
 import numpy
 import pydicom
 from matplotlib import pyplot, cm
+import os
 
-ds = pydicom.read_file("2.dcm")
+base_dir = os.path.dirname(__file__)
+filename = os.path.join(base_dir, '2.dcm')
+ds = pydicom.read_file(filename)
 
 dimensions = (
     int(ds.Rows),

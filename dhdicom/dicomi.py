@@ -19,11 +19,11 @@ class DicomImage():
         '''
         return self.ds.pixel_array
 
-    def write(self, pixels):
+    def write(self):
         '''
         image.write(pixels): Establece los pixels de la imagen dicom
         '''
-        self.ds.pixel_array = pixels
+        self.ds.PixelData = self.ds.pixel_array.tobytes()
 
     def dimensions(self):
         return (int(self.Rows), int(self.Columns))

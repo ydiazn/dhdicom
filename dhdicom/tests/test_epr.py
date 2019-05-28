@@ -3,7 +3,7 @@
 
 import os
 import unittest
-from dicomi import DicomImage
+from dhdicom.dicomi import DicomImage
 from dhdicom.epr import EPRData
 
 
@@ -22,12 +22,12 @@ class ReadEPRData(unittest.TestCase):
             handler.read(self.image)
 
     def test_load_all_data_success(self):
-        from dicomi import DicomImage
 
         registers = ['PatientName', 'PatientID']
         handler = EPRData(registers)
         data = handler.read(self.image)
-        self.assertDictEqual(data,
+        self.assertDictEqual(
+            data,
             {
                 'PatientName': 'FRANCISCO^ALVARES^QUESAD',
                 'PatientID': 'HCMC-18-5456'
@@ -51,12 +51,11 @@ class AnonimizeEPRData(unittest.TestCase):
             handler.anonimize(self.image)
 
     def test_anonimize_success(self):
-        from dicomi import DicomImage
-
         registers = ['PatientName', 'PatientID']
         handler = EPRData(registers)
         data = handler.anonimize(self.image)
-        self.assertDictEqual(data,
+        self.assertDictEqual(
+            data,
             {
                 'PatientName': 'FRANCISCO^ALVARES^QUESAD',
                 'PatientID': 'HCMC-18-5456'
@@ -65,6 +64,4 @@ class AnonimizeEPRData(unittest.TestCase):
         )
         self.assertEqual(self.image.PatientName, 'pepe')
         self.assertEqual(self.image.PatientID, 'pepe')
-
-
 

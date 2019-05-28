@@ -1,12 +1,12 @@
 # -*- encoding:utf-8 -*-
 # -*- coding:utf-8 -*-
 import pydicom
-from .exceptions import RegisterNotFound
-from dicomi import DicomImage
+from dhdicom.exceptions import RegisterNotFound
+from dhdicom.dicomi import DicomImage
 
 
 class EPRData:
-    
+
     def __init__(self, registers):
         self.registers = registers
 

@@ -19,9 +19,11 @@ class DHDicomHandler:
         epr = self.data_handler.anonimize(image)
         # Ocultacion del EPR y autenticacion
         msg = self._get_message(epr)
-        pixels = self.hider_handler.process(image, msg)
-        #image.write(pixels)
+        self.hider_handler.process(image.read(), msg)
+        image.write()
 
+    def authenticate(self, image):
+        return self.hider_handler.authenticate(image.read())
 
     def _get_message(self, data):
         import json

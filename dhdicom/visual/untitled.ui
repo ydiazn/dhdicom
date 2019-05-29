@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Pruebas</class>
+ <widget class="QMainWindow" name="Pruebas">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>651</width>
+    <height>549</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QScrollArea" name="scrollArea_3">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>350</y>
+      <width>311</width>
+      <height>111</height>
+     </rect>
+    </property>
+    <property name="widgetResizable">
+     <bool>true</bool>
+    </property>
+    <widget class="QWidget" name="scrollAreaWidgetContents_3">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>309</width>
+       <height>109</height>
+      </rect>
+     </property>
+     <widget class="QLabel" name="label_2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>0</y>
+        <width>71</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Id paciente:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_3">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>30</y>
+        <width>111</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Nombre paciente:</string>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QScrollArea" name="scrollArea_4">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>350</y>
+      <width>311</width>
+      <height>111</height>
+     </rect>
+    </property>
+    <property name="widgetResizable">
+     <bool>true</bool>
+    </property>
+    <widget class="QWidget" name="scrollAreaWidgetContents_4">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>309</width>
+       <height>109</height>
+      </rect>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="btn_salir">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>470</y>
+      <width>88</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Salir</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_procesar">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>300</y>
+      <width>88</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Procesar</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_analizar">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>300</y>
+      <width>88</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Analizar</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>30</y>
+      <width>611</width>
+      <height>251</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <layout class="QHBoxLayout" name="layout_original"/>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="layout_procesada"/>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>651</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuArchivo">
+    <property name="title">
+     <string>Archivo</string>
+    </property>
+    <addaction name="actionAbrir"/>
+    <addaction name="actionSalvar"/>
+   </widget>
+   <widget class="QMenu" name="menuRuidos">
+    <property name="title">
+     <string>Ruidos</string>
+    </property>
+    <addaction name="actionRuido_1"/>
+    <addaction name="actionRuido_2"/>
+   </widget>
+   <addaction name="menuArchivo"/>
+   <addaction name="menuRuidos"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionAbrir">
+   <property name="text">
+    <string>Abrir</string>
+   </property>
+  </action>
+  <action name="actionSalvar">
+   <property name="text">
+    <string>Salvar</string>
+   </property>
+  </action>
+  <action name="actionCerrsar">
+   <property name="text">
+    <string>Cerrar</string>
+   </property>
+  </action>
+  <action name="actionRuido_1">
+   <property name="text">
+    <string>Ruido 1</string>
+   </property>
+  </action>
+  <action name="actionRuido_2">
+   <property name="text">
+    <string>Ruido 2</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>btn_salir</sender>
+   <signal>clicked()</signal>
+   <receiver>Pruebas</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>322</x>
+     <y>504</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>198</x>
+     <y>506</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

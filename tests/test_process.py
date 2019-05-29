@@ -83,7 +83,7 @@ class ProcessTest(unittest.TestCase):
         # image size: 255x255, block size:32x32, block num: 255
         np.testing.assert_array_equal(
             blocks_tampered,
-            np.array([0, 254])
+            np.array([0, 255])
         )
 
 

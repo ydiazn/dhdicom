@@ -15,7 +15,7 @@ class PropertiesTest(unittest.TestCase):
         filename = os.path.join(os.path.dirname(__file__), 'images/2.dcm')
         self.image = DicomImage(filename)
         self.ds = pydicom.read_file(filename)
-    
+
     def test_dimensions(self):
         import pydicom
 

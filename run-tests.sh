@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python -m unittest discover dhdicom
+python -m unittest discover tests

@@ -13,7 +13,10 @@ class EPRData:
     def anonimize(self, image):
         '''
         handler.anonimize(image) => dict: anonimiza los registros
-        especificados durante la inicializacion de la imagen pasada por parámetros y devuelve los valores originales de estos registros en un diccionario donde las claves coindiden con los nombres de los registros.
+        especificados durante la inicializacion de la imagen pasada
+        por parámetros y devuelve los valores originales de estos registros
+        en un diccionario donde las claves coindiden con los nombres de los
+        registros.
         '''
         data = self.read(image)
         self._anonimize(image)
@@ -21,7 +24,8 @@ class EPRData:
 
     def read(self, image):
         '''
-        handler.read(image) => dict: devuelve los valores de los registros especificados durante la inicialización de la imagen pasada por
+        handler.read(image) => dict: devuelve los valores de los registros
+        especificados durante la inicialización de la imagen pasada por
         parámetros en un diccionario donde las claves coinciden con los nombres
         de los registros.
         '''

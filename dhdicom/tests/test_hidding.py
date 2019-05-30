@@ -15,14 +15,16 @@ class PropertiesTest(unittest.TestCase):
     def test_data_authentic(self):
         data = np.random.uniform(
             low=0, high=65537, size=(128, 128)).astype(int)
-        self.hider.process(data)
+        msg = "Anier Soria Lorente"
+        self.hider.process(data, msg)
         authentic, *l = self.hider.authenticate(data)
         self.assertTrue(authentic)
 
     def test_data_not_authentic(self):
         data = np.random.uniform(
             low=0, high=65537, size=(128, 128)).astype(int)
-        self.hider.process(data)
+        msg = "Anier Soria Lorente"
+        self.hider.process(data, msg)
         data[0][0] += 1
         data[127][127] += 1
         authentic, *l = self.hider.authenticate(data)
@@ -34,5 +36,6 @@ class PropertiesTest(unittest.TestCase):
             low=0, high=65537, size=(128, 128)).astype(int)
         msg = "Anier Soria Lorente"
         self.hider.process(data, msg)
-        msg_extracted = self.hider.get_msg(data)
+        msg_extracted = self.hider.get_msg(data)[:len(msg)]
+
         self.assertEqual(msg, msg_extracted)

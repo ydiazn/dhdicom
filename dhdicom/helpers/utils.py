@@ -182,44 +182,14 @@ def increase_string(seq, n):
     return cad[:n]
 
 
-def bin2dec(bin_seq):
-    dec_repr = 0
-    for i in range(len(bin_seq)):
-        if bin_seq[len(bin_seq) - i - 1] != '0':
-            dec_repr += 2 ** i
-    return dec_repr
-
-
-def dec2char(seq):
-    cad = ""
-    for i in range(len(seq)):
-        cad += chr(seq[i])
-    return cad
+def char2bin(data):
+    return "".join(format(ord(x), '08b') for x in data)
 
 
 def bin2char(bin_seq):
-    L = []
-    n = len(bin_seq) // 8
-    for i in range(n):
-        j = i * 8
-        k = i * 8 + 7
-        L.append(bin2dec(bin_seq[j:k + 1]))
-    return dec2char(L)
-
-
-def char2dec(mens):
-    L = []
-    for i in range(len(mens)):
-        L.append(ord(mens[i]))
-    return L
-
-
-def char2bin(mens):
-    cad = ""
-    L = char2dec(mens)
-    for i in range(len(L)):
-        cad += np.binary_repr(L[i], width=8)
-    return cad
+    return ''.join(
+        (chr(int(bin_seq[i:i+8], 2)) for i in range(0, len(bin_seq), 8))
+    )
 
 
 def list_min(vect, n):

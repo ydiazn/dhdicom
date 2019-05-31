@@ -27,7 +27,42 @@ class EPRHindingAndAuthentication():
         self.n = n
 
     def get_msg(self, watermarked_array):
-        return msg
+        # Initial Values
+        x = self.x0
+        modified_blocks = []
+        extracted_lsb = ""
+        # Red
+        # square_color = (255, 0, 0)
+        # Green
+        square_color = (0, 255, 0)
+        # Blue
+        # square_color = (0, 0, 255)
+        if len(watermarked_array.shape) == 2:
+            red_watermarked_array = watermarked_array
+        else:
+            # Red component
+            red_watermarked_array = watermarked_array[:, :, 0]
+        # Instance
+        block_instace_32x32 = BlocksImage(red_watermarked_array, 32, 32)
+        # Convert to integer sequence
+        int_seq = list(map(int, self.sha512_key))
+        # Calculating chaotic positions
+        x = utils.pwlcm(x, self.p)
+        pos = utils.random_list(x, self.p, list(range(1024)))[:self.n]
+        # Watermark extraction process
+        for i in range(block_instace_32x32.max_num_blocks()):
+            block3x32 = block_instace_32x32.get_block(i)
+            block_instace_1x1 = BlocksImage(block3x32, 1, 1)
+            copy_1x1 = deepcopy(block_instace_1x1)
+            for j in range(self.n):
+                copy_1x1.set_block([[int_seq[j]]], pos[j])
+            hash_seq = utils.sha256_to_image_bin(copy_1x1.get())
+            for j in range(256, self.n):
+                extracted_lsb += utils.ext_lsb(
+                    block_instace_1x1.get_block(pos[j])[0][0]
+                )
+
+        return utils.bin2char(extracted_lsb)
 
     def authenticate(self, watermarked_array):
         # Initial Values
@@ -48,19 +83,17 @@ class EPRHindingAndAuthentication():
         block_instace_32x32 = BlocksImage(red_watermarked_array, 32, 32)
         # Convert to integer sequence
         int_seq = list(map(int, self.sha512_key))
-
+        # Calculating chaotic positions
+        x = utils.pwlcm(x, self.p)
+        pos = utils.random_list(x, self.p, list(range(1024)))[:self.n]
         # Watermark extraction process
         for i in range(block_instace_32x32.max_num_blocks()):
             block3x32 = block_instace_32x32.get_block(i)
             block_instace_1x1 = BlocksImage(block3x32, 1, 1)
             copy_1x1 = deepcopy(block_instace_1x1)
-            x = utils.pwlcm(x, self.p)
-            pos = utils.random_list(x, self.p, list(range(1024)))[:512]
             for j in range(self.n):
                 copy_1x1.set_block([[int_seq[j]]], pos[j])
             hash_seq = utils.sha256_to_image_bin(copy_1x1.get())
-            x = utils.pwlcm(x, self.p)
-            pos = utils.random_list(x, self.p, list(range(1024)))[:256]
             extracted_lsb = ""
             for j in range(256):
                 extracted_lsb += utils.ext_lsb(
@@ -76,7 +109,8 @@ class EPRHindingAndAuthentication():
 
     def process(self, cover_array, msg=None):
         # Initial value
-        x = self.x0
+        x, l = self.x0, 0
+        bin_msg = utils.char2bin(msg)
         if len(cover_array.shape) == 2:
             red_cover_array = cover_array
         else:
@@ -86,24 +120,32 @@ class EPRHindingAndAuthentication():
         block_instace_32x32 = BlocksImage(red_cover_array, 32, 32)
         # Convert to integer sequence
         int_seq = list(map(int, self.sha512_key))
+        # Calculating chaotic positions
+        x = utils.pwlcm(x, self.p)
+        pos = utils.random_list(x, self.p, list(range(1024)))[:self.n]
         # Watermark insertion process
         for i in range(block_instace_32x32.max_num_blocks()):
             block3x32 = block_instace_32x32.get_block(i)
             block_instace_1x1 = BlocksImage(block3x32, 1, 1)
             copy_1x1 = deepcopy(block_instace_1x1)
-            x = utils.pwlcm(x, self.p)
-            pos = utils.random_list(x, self.p, list(range(1024)))[:512]
             for j in range(self.n):
                 copy_1x1.set_block([[int_seq[j]]], pos[j])
             hash_seq = utils.sha256_to_image_bin(copy_1x1.get())
-            x = utils.pwlcm(x, self.p)
-            pos = utils.random_list(x, self.p, list(range(1024)))[:256]
             r = 0
-            for j in range(256):
-                coef = utils.replace(
-                    block_instace_1x1.get_block(pos[j])[0][0], hash_seq[r]
-                )
+            for j in range(self.n):
+                if j < 256:
+                    coef = utils.replace(
+                        block_instace_1x1.get_block(
+                        pos[j])[0][0], hash_seq[r]
+                    )
+                    r += 1
+                else:
+                    if l < len(bin_msg):
+                        coef = utils.replace(
+                            block_instace_1x1.get_block(pos[j])[0][0],
+                            bin_msg[l]
+                        )
+                        l += 1
                 block_instace_1x1.set_block([[coef]], pos[j])
-                r += 1
 
         return cover_array

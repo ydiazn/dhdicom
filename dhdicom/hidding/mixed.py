@@ -46,14 +46,14 @@ class EPRHindingAndAuthentication():
         block_instace_32x32 = BlocksImage(red_watermarked_array, 32, 32)
         # Convert to integer sequence
         int_seq = list(map(int, self.sha512_key))
-
+        # Calculating chaotic positions
+        x = utils.pwlcm(x, self.p)
+        pos = utils.random_list(x, self.p, list(range(1024)))[:self.n]
         # Watermark extraction process
         for i in range(block_instace_32x32.max_num_blocks()):
             block3x32 = block_instace_32x32.get_block(i)
             block_instace_1x1 = BlocksImage(block3x32, 1, 1)
             copy_1x1 = deepcopy(block_instace_1x1)
-            x = utils.pwlcm(x, self.p)
-            pos = utils.random_list(x, self.p, list(range(1024)))[:self.n]
             for j in range(self.n):
                 copy_1x1.set_block([[int_seq[j]]], pos[j])
             hash_seq = utils.sha256_to_image_bin(copy_1x1.get())
@@ -83,14 +83,14 @@ class EPRHindingAndAuthentication():
         block_instace_32x32 = BlocksImage(red_watermarked_array, 32, 32)
         # Convert to integer sequence
         int_seq = list(map(int, self.sha512_key))
-
+        # Calculating chaotic positions
+        x = utils.pwlcm(x, self.p)
+        pos = utils.random_list(x, self.p, list(range(1024)))[:self.n]
         # Watermark extraction process
         for i in range(block_instace_32x32.max_num_blocks()):
             block3x32 = block_instace_32x32.get_block(i)
             block_instace_1x1 = BlocksImage(block3x32, 1, 1)
             copy_1x1 = deepcopy(block_instace_1x1)
-            x = utils.pwlcm(x, self.p)
-            pos = utils.random_list(x, self.p, list(range(1024)))[:self.n]
             for j in range(self.n):
                 copy_1x1.set_block([[int_seq[j]]], pos[j])
             hash_seq = utils.sha256_to_image_bin(copy_1x1.get())
@@ -120,13 +120,14 @@ class EPRHindingAndAuthentication():
         block_instace_32x32 = BlocksImage(red_cover_array, 32, 32)
         # Convert to integer sequence
         int_seq = list(map(int, self.sha512_key))
+        # Calculating chaotic positions
+        x = utils.pwlcm(x, self.p)
+        pos = utils.random_list(x, self.p, list(range(1024)))[:self.n]
         # Watermark insertion process
         for i in range(block_instace_32x32.max_num_blocks()):
             block3x32 = block_instace_32x32.get_block(i)
             block_instace_1x1 = BlocksImage(block3x32, 1, 1)
             copy_1x1 = deepcopy(block_instace_1x1)
-            x = utils.pwlcm(x, self.p)
-            pos = utils.random_list(x, self.p, list(range(1024)))[:self.n]
             for j in range(self.n):
                 copy_1x1.set_block([[int_seq[j]]], pos[j])
             hash_seq = utils.sha256_to_image_bin(copy_1x1.get())

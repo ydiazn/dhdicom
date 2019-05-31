@@ -1,5 +1,6 @@
 # -*- encoding:utf-8 -*-
 # -*- coding:utf-8 -*-
+import json
 
 
 class DHDicomHandler:
@@ -13,19 +14,19 @@ class DHDicomHandler:
         handler.process(image), oculta registros del EPR en la imagen y
         los anonimiza. Los registros se especifican en el data_handler
         '''
-        import json
 
         # anonimización
         epr = self.data_handler.anonimize(image)
         # Ocultacion del EPR y autenticacion
-        msg = self._get_message(epr)
+        msg = json.dumps(epr)
         self.hider_handler.process(image.read(), msg)
         image.write()
 
     def authenticate(self, image):
         return self.hider_handler.authenticate(image.read())
 
-    def _get_message(self, data):
-        import json
-
-        return json.dumps(data)
+    def get_epr(self, image):
+        pixels = image.read()
+        msg = self.hider_handler.get_msg(pixels)
+        # FIXME La longitud del mensaje se debe determinar dinámicamente
+        return json.loads(msg[:72])

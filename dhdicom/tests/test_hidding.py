@@ -34,8 +34,20 @@ class PropertiesTest(unittest.TestCase):
     def test_get_msg(self):
         data = np.random.uniform(
             low=0, high=65537, size=(128, 128)).astype(int)
-        msg = "Anier Soria Lorente"
+        file = open("dhdicom/message/Message_01.txt", "r")
+        msg = file.read()
+        file.close()
         self.hider.process(data, msg)
-        msg_extracted = self.hider.get_msg(data)[:len(msg)]
+        msg_extracted = self.hider.get_msg(data)
 
         self.assertEqual(msg, msg_extracted)
+
+    def test_msg_greather_than_capacity(self):
+        from dhdicom.exceptions import ExceededCapacity
+        data = np.random.uniform(
+            low=0, high=65537, size=(128, 128)).astype(int)
+        file = open("dhdicom/message/Message_00.txt", "r")
+        msg = file.read()
+        file.close()
+        with self.assertRaises(ExceededCapacity):
+            self.hider.process(data, msg)

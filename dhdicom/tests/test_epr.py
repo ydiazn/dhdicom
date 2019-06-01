@@ -64,4 +64,3 @@ class AnonimizeEPRData(unittest.TestCase):
         )
         self.assertEqual(self.image.PatientName, 'pepe')
         self.assertEqual(self.image.PatientID, 'pepe')
-

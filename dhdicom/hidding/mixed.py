@@ -7,6 +7,7 @@ import numpy as np
 from copy import deepcopy
 from dhdicom.helpers import utils
 from dhdicom.helpers.blocks_class import BlocksImage
+from dhdicom.exceptions import ExceededCapacity
 
 
 class DataHiding():
@@ -62,7 +63,12 @@ class EPRHindingAndAuthentication():
                     block_instace_1x1.get_block(pos[j])[0][0]
                 )
 
-        return utils.bin2char(extracted_lsb)
+        # Number of bits to determine the length of the secret message
+        embd_cap = block_instace_32x32.max_num_blocks() * 256
+        len_emb_cap = len(utils.base_change(embd_cap, 2))
+        len_emb_bits = utils.bin2dec(extracted_lsb[:len_emb_cap])
+
+        return utils.bin2char(extracted_lsb[len_emb_cap:][:len_emb_bits])
 
     def authenticate(self, watermarked_array):
         # Initial Values
@@ -118,6 +124,13 @@ class EPRHindingAndAuthentication():
             red_cover_array = cover_array[:, :, 0]
         # Instance
         block_instace_32x32 = BlocksImage(red_cover_array, 32, 32)
+        # Checking the embedding capacity
+        embd_cap = block_instace_32x32.max_num_blocks() * 256
+        len_emb_cap = len(utils.base_change(embd_cap, 2))
+        embd_cap -= len_emb_cap
+        if len(bin_msg) > embd_cap:
+            raise ExceededCapacity
+        bin_msg = utils.base_change(len(bin_msg), 2, len_emb_cap) + bin_msg
         # Convert to integer sequence
         int_seq = list(map(int, self.sha512_key))
         # Calculating chaotic positions

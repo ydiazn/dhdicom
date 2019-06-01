@@ -319,3 +319,35 @@ def delete_elements(seq):
 
 def half_key(key):
     return or_operation(key[:128], key[128:])
+
+
+def list2str(L):
+    return "".join(str(i) for i in L)
+
+
+def base_change(entrada, base, n=None):
+    r = []
+    pe = 1
+    while pe != 0:
+        pe = entrada // base
+        r.insert(0, entrada % base)
+        entrada = pe
+    if n == None:
+        return list2str(r)
+    elif len(r) == n:
+        return list2str(r)
+    elif len(r) > n:
+        return list2str(r[-n:])
+    else:
+        m = n - len(r)
+        for i in range(m):
+            r.insert(0, 0)
+        return list2str(r)
+
+
+def bin2dec(bin_seq):
+    dec_repr = 0
+    for i in range(len(bin_seq)):
+        if bin_seq[len(bin_seq) - i - 1] != '0':
+            dec_repr += 2 ** i
+    return dec_repr

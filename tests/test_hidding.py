@@ -39,3 +39,7 @@ class PropertiesTest(unittest.TestCase):
         msg_extracted = self.hider.get_msg(data)[:len(msg)]
 
         self.assertEqual(msg, msg_extracted)
+
+
+if __name__ == '__main__':
+    unittest.main()

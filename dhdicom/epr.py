@@ -3,24 +3,27 @@
 import pydicom
 from dhdicom.exceptions import RegisterNotFound
 from dhdicom.dicomi import DicomImage
+from deid.dicom import replace_identifiers
+from deid.dicom import get_identifiers
+from deid.config import DeidRecipe
 
 
 class EPRData:
 
-    def __init__(self, registers):
+    def __init__(self, registers, recipe_file):
         self.registers = registers
+        self.recipe = DeidRecipe(deid=recipe_file)
 
     def anonimize(self, image):
         '''
-        handler.anonimize(image) => dict: anonimiza los registros
+        handler.anonimize(image) => tuple: anonimiza los registros
         especificados durante la inicializacion de la imagen pasada
-        por parámetros y devuelve los valores originales de estos registros
-        en un diccionario donde las claves coindiden con los nombres de los
-        registros.
+        por parámetros. Devuelve la ruta de un fichero temporal que contiene
+        la imagen anonimizada y los registros originales en un diccionario.
         '''
         data = self.read(image)
-        self._anonimize(image)
-        return data
+        file = self._anonimize(image)
+        return file, data
 
     def read(self, image):
         '''
@@ -40,5 +43,13 @@ class EPRData:
         return data
 
     def _anonimize(self, image):
-        for register in self.registers:
-            setattr(image, register, 'pepe')
+        '''
+        self._anonimize(image) => file path, anonimiza la imagen pasada
+        por parámetros según las reglas definidas en self.recipe y devuelve
+        la ruta de un fichero temporal con dichas modificaciones
+        '''
+        files = [image.path]
+        ids = get_identifiers(files)
+        cleaned_files = replace_identifiers(
+            dicom_files=files, deid=self.recipe, ids=ids)
+        return cleaned_files[0]

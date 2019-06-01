@@ -10,75 +10,53 @@ from dhdicom.dicomi import DicomImage
 
 
 class ProcessTest(unittest.TestCase):
-    def test_process(self):
-        from dhdicom.hidding.mixed import EPRHindingAndAuthentication
 
-        filename = os.path.join(os.path.dirname(__file__), 'images/2.dcm')
-        image = DicomImage(filename)
-        dataset = pydicom.read_file(filename)
-
-        patient_name = dataset.PatientName
-        patient_id = dataset.PatientID
-        pixels = np.copy(dataset.pixel_array)
-
-        registers = ['PatientName', 'PatientID']
-        epr = EPRData(registers)
-        hider = EPRHindingAndAuthentication('nuevaclave')
-
-        handler = DHDicomHandler(data_handler=epr, hider_handler=hider)
-        handler.process(image)
-
-        # Verificacion de la anonimizacion
-        self.assertNotEqual(image.PatientName, patient_name)
-        self.assertNotEqual(image.PatientID, patient_id)
-
-        # Despues del procesamiento los pixeles se modificaron
-        np.testing.assert_raises(
-            AssertionError, np.testing.assert_array_equal, image.read(), pixels
-        )
+    def setUp(self):
+        self.base = os.path.dirname(__file__)
 
     def test_authentic_image(self):
         from dhdicom.hidding.mixed import EPRHindingAndAuthentication
 
-        filename = os.path.join(os.path.dirname(__file__), 'images/2.dcm')
+        filename = os.path.join(self.base, 'images/2.dcm')
         image = DicomImage(filename)
 
         registers = ['PatientName', 'PatientID']
-        epr = EPRData(registers)
+        recipe = os.path.join(self.base, 'recipes/confidential')
+        epr = EPRData(registers, recipe)
         hider = EPRHindingAndAuthentication('nuevaclave')
 
         handler = DHDicomHandler(data_handler=epr, hider_handler=hider)
-        handler.process(image)
+        new_image = handler.process(image)
 
-        # Despues del procesamiento los pixeles se modificaron
-        self.assertTrue(handler.authenticate(image))
+        self.assertTrue(handler.authenticate(new_image))
 
     def test_not_authentic_image(self):
         from dhdicom.hidding.mixed import EPRHindingAndAuthentication
         import pydicom
 
-        filename = os.path.join(os.path.dirname(__file__), 'images/2.dcm')
+        filename = os.path.join(self.base, 'images/2.dcm')
         image = DicomImage(filename)
         ds = pydicom.read_file(filename)
 
         dimesions = ds.Rows, ds.Columns
 
         registers = ['PatientName', 'PatientID']
-        epr = EPRData(registers)
+        recipe = os.path.join(self.base, 'recipes/confidential')
+        epr = EPRData(registers, recipe)
         hider = EPRHindingAndAuthentication('nuevaclave')
 
         handler = DHDicomHandler(data_handler=epr, hider_handler=hider)
-        handler.process(image)
+        new_image = handler.process(image)
 
         # Image Tampering
         x = dimesions[0] - 1
         y = dimesions[1] - 1
-        image.pixel_array[0][0] += 1
-        image.pixel_array[x][y] += 1
-        image.write()
+        new_image.pixel_array[0][0] += 1
+        new_image.pixel_array[x][y] += 1
+        new_image.write()
 
         # Despues del procesamiento los pixeles se modificaron
-        authentic, blocks_tampered = handler.authenticate(image)
+        authentic, blocks_tampered = handler.authenticate(new_image)
         self.assertFalse(authentic)
         # image size: 255x255, block size:32x32, block num: 255
         np.testing.assert_array_equal(
@@ -90,7 +68,7 @@ class ProcessTest(unittest.TestCase):
         from dhdicom.hidding.mixed import EPRHindingAndAuthentication
         import pydicom
 
-        filename = os.path.join(os.path.dirname(__file__), 'images/2.dcm')
+        filename = os.path.join(self.base, 'images/2.dcm')
         image = DicomImage(filename)
         ds = pydicom.read_file(filename)
 
@@ -98,14 +76,15 @@ class ProcessTest(unittest.TestCase):
         patient_name = ds.PatientName
         patient_id = ds.PatientID
 
-        epr = EPRData(registers)
+        recipe = os.path.join(self.base, 'recipes/confidential')
+        epr = EPRData(registers, recipe)
         data = epr.read(image)
         hider = EPRHindingAndAuthentication('nuevaclave')
 
         handler = DHDicomHandler(data_handler=epr, hider_handler=hider)
-        handler.process(image)
+        new_image = handler.process(image)
 
-        self.assertEqual(data, handler.get_epr(image))
+        self.assertEqual(data, handler.get_epr(new_image))
 
 
 if __name__ == '__main__':

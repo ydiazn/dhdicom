@@ -7,7 +7,7 @@ from dhdicom.exceptions import RegisterNotFound
 class DicomImage():
 
     def __init__(self, image_path):
-        self.image_path = image_path
+        self.path = image_path
         self.ds = pydicom.read_file(image_path)
 
     def __getattr__(self, attr):

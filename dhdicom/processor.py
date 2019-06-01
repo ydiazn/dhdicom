@@ -1,6 +1,7 @@
 # -*- encoding:utf-8 -*-
 # -*- coding:utf-8 -*-
 import json
+from dhdicom.dicomi import DicomImage
 
 
 class DHDicomHandler:
@@ -16,11 +17,12 @@ class DHDicomHandler:
         '''
 
         # anonimización
-        epr = self.data_handler.anonimize(image)
+        file, epr = self.data_handler.anonimize(image)
         # Ocultacion del EPR y autenticacion
+        new_image = DicomImage(file)
         msg = json.dumps(epr)
-        self.hider_handler.process(image.read(), msg)
-        image.write()
+        self.hider_handler.process(new_image.read(), msg)
+        return new_image
 
     def authenticate(self, image):
         return self.hider_handler.authenticate(image.read())

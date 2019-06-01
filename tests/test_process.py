@@ -86,6 +86,27 @@ class ProcessTest(unittest.TestCase):
             np.array([0, 255])
         )
 
+    def test_get_message(self):
+        from dhdicom.hidding.mixed import EPRHindingAndAuthentication
+        import pydicom
+
+        filename = os.path.join(os.path.dirname(__file__), 'images/2.dcm')
+        image = DicomImage(filename)
+        ds = pydicom.read_file(filename)
+
+        registers = ['PatientName', 'PatientID']
+        patient_name = ds.PatientName
+        patient_id = ds.PatientID
+
+        epr = EPRData(registers)
+        data = epr.read(image)
+        hider = EPRHindingAndAuthentication('nuevaclave')
+
+        handler = DHDicomHandler(data_handler=epr, hider_handler=hider)
+        handler.process(image)
+
+        self.assertEqual(data, handler.get_epr(image))
+
 
 if __name__ == '__main__':
     unittest.main()

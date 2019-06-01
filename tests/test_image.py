@@ -62,7 +62,8 @@ class RegisterTest(unittest.TestCase):
 class PixelsTest(unittest.TestCase):
 
     def setUp(self):
-        self.file_path = os.path.join(os.path.dirname(__file__), 'images/2.dcm')
+        self.file_path = os.path.join(
+            os.path.dirname(__file__), 'images/2.dcm')
 
     def test_read(self):
         import pydicom

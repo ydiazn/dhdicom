@@ -113,7 +113,8 @@ class EPRHindingAndAuthentication():
 
         return True,
 
-    def process(self, cover_array, msg=None):
+    def process(self, cover, msg=None):
+        cover_array = np.copy(cover)
         # Initial value
         x, l = self.x0, 0
         bin_msg = utils.char2bin(msg)

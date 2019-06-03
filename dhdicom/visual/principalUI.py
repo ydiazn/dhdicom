@@ -3,6 +3,7 @@
 
 import sqlite3 as lite
 import sys
+import os
 
 import PyQt4
 from PyQt4 import QtCore, QtGui
@@ -24,6 +25,9 @@ from dhdicom.epr import EPRData
 # cargar el visual
 from .visual import Ui_Pruebas
 import numpy as np
+from dhdicom.processor import DHDicomHandler
+from dhdicom.epr import EPRData
+from dhdicom.hidding.mixed import EPRHindingAndAuthentication
 
 
 # ventana principal de la aplicacion
@@ -39,7 +43,13 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
         self. actionSalvar.triggered.connect(self.Salvar_imagen)
         self.btn_procesar.clicked.connect(self.Procesar_imagen)
         self.init_canvas()
-        self.epr = EPRData(['PatientID', 'PatientName'])
+
+        # Registros EPR
+        base = os.path.dirname(os.path.dirname(__file__))
+        self.epr = EPRData(
+            ['PatientID', 'PatientName'],
+            os.path.join(base, 'recipes/confidential')
+        )
 
     def Cargar_imagen(self):
         ruta_imagen = QFileDialog.getOpenFileName(
@@ -102,7 +112,10 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
         canvas.draw()
 
     def Procesar_imagen(self):
-        self.draw_image(self.watermarked_canvas, self.original_image)
+        hider = EPRHindingAndAuthentication('nuevaclave')
+        handler = DHDicomHandler(data_handler=self.epr, hider_handler=hider)
+        image = handler.process(self.original_image)
+        self.draw_image(self.watermarked_canvas, image)
 
     def Salvar_imagen(self):
         pass

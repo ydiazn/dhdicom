@@ -21,7 +21,9 @@ class DHDicomHandler:
         # Ocultacion del EPR y autenticacion
         new_image = DicomImage(file)
         msg = json.dumps(epr)
-        self.hider_handler.process(new_image.read(), msg)
+        watermarked_pixels = self.hider_handler.process(
+            new_image.read(), msg)
+        new_image.write(watermarked_pixels)
         return new_image
 
     def authenticate(self, image):

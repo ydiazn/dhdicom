@@ -1,0 +1,8 @@
+FORMAT dicom
+
+%header
+
+ADD PatientIdentityRemoved Yes
+KEEP ALL
+REMOVE PatientName
+REMOVE PatientID

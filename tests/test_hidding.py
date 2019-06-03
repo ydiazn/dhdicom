@@ -16,18 +16,18 @@ class PropertiesTest(unittest.TestCase):
         data = np.random.uniform(
             low=0, high=65537, size=(128, 128)).astype(int)
         msg = "Anier Soria Lorente"
-        self.hider.process(data, msg)
-        authentic, *l = self.hider.authenticate(data)
+        watermarked = self.hider.process(data, msg)
+        authentic, *l = self.hider.authenticate(watermarked)
         self.assertTrue(authentic)
 
     def test_data_not_authentic(self):
         data = np.random.uniform(
             low=0, high=65537, size=(128, 128)).astype(int)
         msg = "Anier Soria Lorente"
-        self.hider.process(data, msg)
-        data[0][0] += 1
-        data[127][127] += 1
-        authentic, *l = self.hider.authenticate(data)
+        watermarked = self.hider.process(data, msg)
+        watermarked[0][0] += 1
+        watermarked[127][127] += 1
+        authentic, *l = self.hider.authenticate(watermarked)
         self.assertFalse(authentic)
         self.assertListEqual(l[0], [0, 15])
 
@@ -40,8 +40,8 @@ class PropertiesTest(unittest.TestCase):
         file = open(os.path.join(base, 'messages/Message_01.txt'), "r")
         msg = file.read()
         file.close()
-        self.hider.process(data, msg)
-        msg_extracted = self.hider.get_msg(data)
+        watermarked = self.hider.process(data, msg)
+        msg_extracted = self.hider.get_msg(watermarked)
 
         self.assertEqual(msg, msg_extracted)
 

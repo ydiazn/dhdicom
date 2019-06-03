@@ -82,5 +82,6 @@ class PixelsTest(unittest.TestCase):
         import numpy as np
 
         image = DicomImage(self.file_path)
-        image.pixel_array[0][0] = 100
-        image.write()
+        new_array = np.copy(image.pixel_array)
+        new_array[0][0] = 100
+        image.write(new_array)

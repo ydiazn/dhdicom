@@ -18,16 +18,7 @@ class Metrics:
 
     def psnr(self, cover_array, stego_array):
         RMSE = self.mse(cover_array, stego_array)
-        if np.max(cover_array) == 255:
-            if RMSE != 0:
-                return 10 * log10(255 ** 2 / RMSE)
-            else:
-                return 100
-        else:
-            if RMSE != 0:
-                return 10 * log10(65535 ** 2 / RMSE)
-            else:
-                return 100
+        return 10 * log10(255 ** 2 / RMSE) if RMSE else 100
 
     def uiqi(self, cover_array, stego_array):
         dims_cover = cover_array.shape

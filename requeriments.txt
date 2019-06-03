@@ -3,6 +3,7 @@ pydicom
 
 # Images
 pillow
+opencv-python
 
 # Tests
 pytest 

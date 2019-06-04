@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>651</width>
-    <height>549</height>
+    <width>852</width>
+    <height>564</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,8 +18,8 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>350</y>
-      <width>311</width>
+      <y>370</y>
+      <width>411</width>
       <height>111</height>
      </rect>
     </property>
@@ -31,17 +31,17 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>309</width>
+       <width>409</width>
        <height>109</height>
       </rect>
      </property>
      <widget class="QLabel" name="label_2">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>0</y>
-        <width>71</width>
-        <height>21</height>
+        <x>11</x>
+        <y>1</y>
+        <width>67</width>
+        <height>17</height>
        </rect>
       </property>
       <property name="text">
@@ -61,14 +61,44 @@
        <string>Nombre paciente:</string>
       </property>
      </widget>
+     <widget class="QLabel" name="lb_paciente_id">
+      <property name="geometry">
+       <rect>
+        <x>80</x>
+        <y>0</y>
+        <width>321</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lb_paciente_name">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>30</y>
+        <width>281</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <zorder>label_3</zorder>
+     <zorder>lb_paciente_name</zorder>
+     <zorder>label_2</zorder>
+     <zorder>lb_paciente_id</zorder>
     </widget>
    </widget>
    <widget class="QScrollArea" name="scrollArea_4">
     <property name="geometry">
      <rect>
-      <x>330</x>
-      <y>350</y>
-      <width>311</width>
+      <x>430</x>
+      <y>370</y>
+      <width>411</width>
       <height>111</height>
      </rect>
     </property>
@@ -80,17 +110,69 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>309</width>
+       <width>409</width>
        <height>109</height>
       </rect>
      </property>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>0</y>
+        <width>71</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Id paciente:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_4">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>30</y>
+        <width>111</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Nombre paciente:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lb_paciente_id_oculto">
+      <property name="geometry">
+       <rect>
+        <x>80</x>
+        <y>0</y>
+        <width>321</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLabel" name="lb_paciente_name_oculto">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>30</y>
+        <width>281</width>
+        <height>17</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
     </widget>
    </widget>
    <widget class="QPushButton" name="btn_salir">
     <property name="geometry">
      <rect>
-      <x>280</x>
-      <y>470</y>
+      <x>360</x>
+      <y>490</y>
       <width>88</width>
       <height>29</height>
      </rect>
@@ -102,7 +184,7 @@
    <widget class="QPushButton" name="btn_procesar">
     <property name="geometry">
      <rect>
-      <x>40</x>
+      <x>20</x>
       <y>300</y>
       <width>88</width>
       <height>29</height>
@@ -115,7 +197,7 @@
    <widget class="QPushButton" name="btn_analizar">
     <property name="geometry">
      <rect>
-      <x>140</x>
+      <x>120</x>
       <y>300</y>
       <width>88</width>
       <height>29</height>
@@ -125,23 +207,44 @@
      <string>Analizar</string>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>30</y>
-      <width>611</width>
-      <height>251</height>
+      <x>10</x>
+      <y>350</y>
+      <width>151</width>
+      <height>17</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <layout class="QHBoxLayout" name="layout_original"/>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="layout_procesada"/>
-     </item>
-    </layout>
+    <property name="font">
+     <font>
+      <pointsize>11</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Datos confidenciales</string>
+    </property>
+   </widget>
+   <widget class="QSplitter" name="splitter">
+    <property name="geometry">
+     <rect>
+      <x>21</x>
+      <y>30</y>
+      <width>811</width>
+      <height>261</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+    <widget class="QWidget" name="">
+     <layout class="QHBoxLayout" name="layout_original"/>
+    </widget>
+    <widget class="QWidget" name="">
+     <layout class="QHBoxLayout" name="layout_procesada"/>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -149,7 +252,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>651</width>
+     <width>852</width>
      <height>23</height>
     </rect>
    </property>
@@ -166,6 +269,7 @@
     </property>
     <addaction name="actionRuido_1"/>
     <addaction name="actionRuido_2"/>
+    <addaction name="actionCropping"/>
    </widget>
    <addaction name="menuArchivo"/>
    <addaction name="menuRuidos"/>
@@ -188,12 +292,17 @@
   </action>
   <action name="actionRuido_1">
    <property name="text">
-    <string>Ruido 1</string>
+    <string>Sal y pimienta</string>
    </property>
   </action>
   <action name="actionRuido_2">
    <property name="text">
-    <string>Ruido 2</string>
+    <string>Gausiano</string>
+   </property>
+  </action>
+  <action name="actionCropping">
+   <property name="text">
+    <string>Cropping</string>
    </property>
   </action>
  </widget>
@@ -206,8 +315,8 @@
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>322</x>
-     <y>504</y>
+     <x>402</x>
+     <y>524</y>
     </hint>
     <hint type="destinationlabel">
      <x>198</x>

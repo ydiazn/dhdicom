@@ -32,13 +32,14 @@ class EPRData:
         parámetros en un diccionario donde las claves coinciden con los nombres
         de los registros.
         '''
-        try:
-            data = {
-                register: str(getattr(image, register))
-                for register in self.registers
-            }
-        except AttributeError:
-            raise RegisterNotFound
+        data = {}
+        for register in self.registers:
+            try:
+                value = str(getattr(image, register))
+            except AttributeError:
+                value = None
+            finally:
+                data.update({register: value})
 
         return data
 

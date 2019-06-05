@@ -61,8 +61,8 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
 
     def load_epr_data(self, image):
         data = self.epr.read(image)
-        self.label_2.setText(data['PatientID'])
-        self.label_3.setText(data['PatientName'])
+        self.lb_paciente_id.setText(data['PatientID'])
+        self.lb_paciente_name.setText(data['PatientName'])
 
     def init_canvas(self):
         pyplot.set_cmap(pyplot.gray())
@@ -78,8 +78,8 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
         ax.set_aspect('equal', 'datalim')
         self.watermarked_canvas = FigureCanvas(figure)
 
-        self.layout_original.addWidget(self.dicom_canvas)
-        self.layout_procesada.addWidget(self.watermarked_canvas)
+        self.canvasLayout.addWidget(self.dicom_canvas)
+        self.canvasLayout.addWidget(self.watermarked_canvas)
 
     def draw_image(self, canvas, image):
         figure = canvas.figure

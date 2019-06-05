@@ -17,11 +17,18 @@ class ReadEPRData(unittest.TestCase):
     def test_an_incorrect_register(self):
         from dhdicom.exceptions import RegisterNotFound
 
-        registers = ['PatientName, PatientData']
-        with self.assertRaises(RegisterNotFound) as context:
-            recipe = os.path.join(self.base, 'recipes/confidential')
-            handler = EPRData(registers, recipe)
-            handler.read(self.image)
+        registers = ['PatientName', 'PatientData']
+        recipe = os.path.join(self.base, 'recipes/confidential')
+        handler = EPRData(registers, recipe)
+        data = handler.read(self.image)
+        self.assertDictEqual(
+            data,
+            {
+                'PatientName': 'FRANCISCO^ALVARES^QUESAD',
+                'PatientData': None
+            },
+            'Error extracting confidential data from image'
+        )
 
     def test_load_all_data_success(self):
 
@@ -45,15 +52,6 @@ class AnonimizeEPRData(unittest.TestCase):
         self.base = os.path.dirname(__file__)
         self.image = DicomImage(
             os.path.join(self.base, 'images/2.dcm'))
-
-    def test_an_incorrect_register(self):
-        from dhdicom.exceptions import RegisterNotFound
-
-        registers = ['PatientName, PatientData']
-        with self.assertRaises(RegisterNotFound) as context:
-            recipe = os.path.join(self.base, 'recipes/confidential')
-            handler = EPRData(registers, recipe)
-            handler.anonimize(self.image)
 
     def test_anonimization_sucess(self):
         import pydicom

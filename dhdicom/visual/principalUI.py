@@ -57,12 +57,20 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
 
         self.original_image = DicomImage(ruta_imagen)
         self.draw_image(self.dicom_canvas, self.original_image)
-        self.load_epr_data(self.original_image)
+        data = self.epr.read(self.original_image)
+        self.load_epr_data(data)
 
-    def load_epr_data(self, image):
-        data = self.epr.read(image)
-        self.label_2.setText(data['PatientID'])
-        self.label_3.setText(data['PatientName'])
+    def load_epr_data(self, data):
+        patient_id = data['PatientID'] or 'undefinied'
+        patient_name = data['PatientName'] or 'undefinied'
+        self.lb_paciente_id.setText(patient_id)
+        self.lb_paciente_name.setText(patient_name)
+
+    def load_epr_hidden(self, data):
+        patient_id = data['PatientID'] or 'undefinied'
+        patient_name = data['PatientName'] or 'undefinied'
+        self.lb_paciente_id_oculto.setText(patient_id)
+        self.lb_paciente_name_oculto.setText(patient_name)
 
     def init_canvas(self):
         pyplot.set_cmap(pyplot.gray())
@@ -78,8 +86,8 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
         ax.set_aspect('equal', 'datalim')
         self.watermarked_canvas = FigureCanvas(figure)
 
-        self.layout_original.addWidget(self.dicom_canvas)
-        self.layout_procesada.addWidget(self.watermarked_canvas)
+        self.canvasLayout.addWidget(self.dicom_canvas)
+        self.canvasLayout.addWidget(self.watermarked_canvas)
 
     def draw_image(self, canvas, image):
         figure = canvas.figure
@@ -116,6 +124,8 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
         handler = DHDicomHandler(data_handler=self.epr, hider_handler=hider)
         image = handler.process(self.original_image)
         self.draw_image(self.watermarked_canvas, image)
+        self.load_epr_data(self.epr.read(image))
+        self.load_epr_hidden(handler.get_epr(image))
 
     def Salvar_imagen(self):
         pass

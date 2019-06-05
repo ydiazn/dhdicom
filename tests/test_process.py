@@ -54,14 +54,15 @@ class ProcessTest(unittest.TestCase):
         # Image Tampering
         x = dimesions[0] - 1
         y = dimesions[1] - 1
-        copy = np.copy(new_image.pixel_array)
-        copy[0][0] += 1
-        copy[x][y] += 1
-        new_image.write(copy)
+        pixels = new_image.read()
+        pixels[0][0] += 1
+        pixels[x][y] += 1
+        new_image.write(pixels)
 
         # Despues del procesamiento los pixeles se modificaron
         authentic, blocks_tampered = handler.authenticate(new_image)
         self.assertFalse(authentic)
+        print(blocks_tampered)
         # image size: 255x255, block size:32x32, block num: 255
         np.testing.assert_array_equal(
             blocks_tampered,

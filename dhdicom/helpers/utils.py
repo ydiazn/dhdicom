@@ -89,20 +89,6 @@ def random_list(x, p, L):
     return pos
 
 
-def contracted_key(bin_seq, n=128):
-    cad = ""
-    L = []
-    if list(bin_seq).count("1") == n:
-        return bin_seq
-    elif list(bin_seq).count("1") > n:
-        for i in range(len(bin_seq)):
-            if i not in L and list(cad).count("1") != n:
-                cad += bin_seq[i]
-    else:
-        print("Error: Bits equal to 1 are not enough")
-    return cad
-
-
 # x e y are a list of integer numbers
 # bin_seq is a binary sequence
 def chaotic_positions(x, y, bin_seq):
@@ -142,20 +128,20 @@ def pass_generator(bin_seq):
 
 def replace(byte_init, bit):
     if bit == '0':
-        if byte_init % 2 == 0:
+        if abs(byte_init) % 2 == 0:
             byte_fin = byte_init
-        else:
+        elif abs(byte_init) % 2 == 1:
             byte_fin = byte_init - 1
     elif bit == '1':
-        if byte_init % 2 == 0:
+        if abs(byte_init) % 2 == 0:
             byte_fin = byte_init + 1
-        else:
+        elif abs(byte_init) % 2 == 1:
             byte_fin = byte_init
     return byte_fin
 
 
 def ext_lsb(byte):
-    if byte % 2 == 0:
+    if abs(byte) % 2 == 0:
         return '0'
     return '1'
 

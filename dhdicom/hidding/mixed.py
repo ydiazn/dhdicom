@@ -148,16 +148,13 @@ class EPRHindingAndAuthentication():
             r = 0
             for j in range(self.n):
                 if j < 256:
-                    coef = utils.replace(
-                        block_instace_1x1.get_block(pos[j])[0][0], hash_seq[r]
-                    )
+                    coef = block_instace_1x1.get_block(pos[j])[0][0]
+                    coef = utils.replace(coef, hash_seq[r])
                     r += 1
                 else:
                     if l < len(bin_msg):
-                        coef = utils.replace(
-                            block_instace_1x1.get_block(pos[j])[0][0],
-                            bin_msg[l]
-                        )
+                        coef = block_instace_1x1.get_block(pos[j])[0][0]
+                        coef = utils.replace(abs(coef), bin_msg[l])
                         l += 1
                 block_instace_1x1.set_block([[coef]], pos[j])
 

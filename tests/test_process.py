@@ -28,7 +28,10 @@ class ProcessTest(unittest.TestCase):
         handler = DHDicomHandler(data_handler=epr, hider_handler=hider)
         new_image = handler.process(image)
 
-        self.assertTrue(handler.authenticate(new_image))
+        authentic, *l = handler.authenticate(new_image)
+        self.assertTrue(authentic)
+        # No hay bloques modificados
+        self.assertFalse(l)
 
     def test_not_authentic_image(self):
         from dhdicom.hidding.mixed import EPRHindingAndAuthentication

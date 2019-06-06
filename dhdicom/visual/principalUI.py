@@ -4,6 +4,7 @@
 import sqlite3 as lite
 import sys
 import os
+import json
 
 import PyQt4
 from PyQt4 import QtCore, QtGui
@@ -39,9 +40,11 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
         self.setupUi(self)
 
         self.original_image = None
+        self.watermarked_image = None
         self. actionAbrir.triggered.connect(self.Cargar_imagen)
         self. actionSalvar.triggered.connect(self.Salvar_imagen)
         self.btn_procesar.clicked.connect(self.Procesar_imagen)
+        self.btnExtractAuthenticate.clicked.connect(self.analizar)
         self.init_canvas()
 
         # Registros EPR
@@ -50,10 +53,12 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
             ['PatientID', 'PatientName'],
             os.path.join(base, 'recipes/confidential')
         )
+        self.hider = EPRHindingAndAuthentication('nuevaclave')
 
     def Cargar_imagen(self):
         ruta_imagen = QFileDialog.getOpenFileName(
             self, u"Cargar Imágenes", QDir.homePath(), u"Imágenes (*.dcm)")
+        self.clear_canvas()
 
         self.original_image = DicomImage(ruta_imagen)
         self.draw_image(self.dicom_canvas, self.original_image)
@@ -120,12 +125,38 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
         canvas.draw()
 
     def Procesar_imagen(self):
-        hider = EPRHindingAndAuthentication('nuevaclave')
-        handler = DHDicomHandler(data_handler=self.epr, hider_handler=hider)
+        handler = DHDicomHandler(
+            data_handler=self.epr, hider_handler=self.hider)
         image = handler.process(self.original_image)
         self.draw_image(self.watermarked_canvas, image)
         self.load_epr_data(self.epr.read(image))
         self.load_epr_hidden(handler.get_epr(image))
+        self.watermarked_image = image
 
     def Salvar_imagen(self):
         pass
+
+    def analizar(self):
+        handler = DHDicomHandler(
+            data_handler=self.epr, hider_handler=self.hider)
+        try:
+            data = handler.get_epr(self.original_image)
+            self.load_epr_hidden(data)
+        except json.JSONDecodeError:
+            self.load_epr_hidden({
+                'PatientName': None,
+                'PatientID': None
+            })
+
+        self.draw_image(self.watermarked_canvas, self.original_image)
+
+    def clear_canvas(self):
+        self.lb_paciente_id_oculto.setText('')
+        self.lb_paciente_name_oculto.setText('')
+        self.lb_paciente_id.setText('')
+        self.lb_paciente_name.setText('')
+
+        self.watermarked_canvas.figure.get_axes()[0].clear()
+        self.watermarked_canvas.draw()
+        self.dicom_canvas.figure.get_axes()[0].clear()
+        self.dicom_canvas.draw()

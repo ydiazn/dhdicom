@@ -35,4 +35,4 @@ class DHDicomHandler:
         pixels = image.read()
         msg = self.hider_handler.get_msg(pixels)
         # FIXME La longitud del mensaje se debe determinar dinámicamente
-        return json.loads(msg[:72])
+        return json.loads(msg)

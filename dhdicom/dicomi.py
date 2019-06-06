@@ -25,6 +25,12 @@ class DicomImage():
         '''
         self.ds.PixelData = pixel_array.tobytes()
 
+    def save(self, file):
+        '''
+        image.save(file): salva la imagen dicom en el path especificado
+        '''
+        self.ds.save_as(file)
+
     def dimensions(self):
         return (int(self.Rows), int(self.Columns))
 

@@ -1,6 +1,7 @@
 # -*- encoding:utf-8 -*-
 # -*- coding:utf-8 -*-
 import json
+import numpy as np
 from dhdicom.dicomi import DicomImage
 
 
@@ -21,9 +22,10 @@ class DHDicomHandler:
         # Ocultacion del EPR y autenticacion
         new_image = DicomImage(file)
         msg = json.dumps(epr)
+        data = new_image.read().astype(np.uint16)
         watermarked_pixels = self.hider_handler.process(
-            new_image.read(), msg)
-        new_image.write(watermarked_pixels)
+            data, msg)
+        new_image.write(watermarked_pixels.astype(np.int16))
         return new_image
 
     def authenticate(self, image):

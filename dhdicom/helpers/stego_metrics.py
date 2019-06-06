@@ -10,7 +10,7 @@ class Metrics:
         m = dims_cover[0]
         n = dims_cover[1]
         C, S = cover_array * 1.0, stego_array * 1.0
-        diff_pow = (C - S) ** 2
+        diff_pow = (np.abs(C) - np.abs(S)) ** 2
         if len(dims_cover) == 2:
             return sum(sum(diff_pow)) / (m * n)
         elif len(dims_cover) == 3:

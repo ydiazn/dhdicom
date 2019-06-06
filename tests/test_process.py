@@ -62,7 +62,6 @@ class ProcessTest(unittest.TestCase):
         # Despues del procesamiento los pixeles se modificaron
         authentic, blocks_tampered = handler.authenticate(new_image)
         self.assertFalse(authentic)
-        print(blocks_tampered)
         # image size: 255x255, block size:32x32, block num: 255
         np.testing.assert_array_equal(
             blocks_tampered,

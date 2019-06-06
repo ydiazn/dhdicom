@@ -28,7 +28,10 @@ class ProcessTest(unittest.TestCase):
         handler = DHDicomHandler(data_handler=epr, hider_handler=hider)
         new_image = handler.process(image)
 
-        self.assertTrue(handler.authenticate(new_image))
+        authentic, *l = handler.authenticate(new_image)
+        self.assertTrue(authentic)
+        # No hay bloques modificados
+        self.assertFalse(l)
 
     def test_not_authentic_image(self):
         from dhdicom.hidding.mixed import EPRHindingAndAuthentication
@@ -51,10 +54,10 @@ class ProcessTest(unittest.TestCase):
         # Image Tampering
         x = dimesions[0] - 1
         y = dimesions[1] - 1
-        copy = np.copy(new_image.pixel_array)
-        copy[0][0] += 1
-        copy[x][y] += 1
-        new_image.write(copy)
+        pixels = new_image.read()
+        pixels[0][0] += 1
+        pixels[x][y] += 1
+        new_image.write(pixels)
 
         # Despues del procesamiento los pixeles se modificaron
         authentic, blocks_tampered = handler.authenticate(new_image)

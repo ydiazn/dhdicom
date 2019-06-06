@@ -126,6 +126,8 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
         self.draw_image(self.watermarked_canvas, image)
         self.load_epr_data(self.epr.read(image))
         self.load_epr_hidden(handler.get_epr(image))
-
+    
     def Salvar_imagen(self):
-        pass
+        dirName = QFileDialog.getExistingDirectory(self, u"Seleccionar ubicación", QDir.homePath(), QFileDialog.ShowDirsOnly)
+        print(dirName)
+

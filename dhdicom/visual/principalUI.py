@@ -129,5 +129,8 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
     
     def Salvar_imagen(self):
         dirName = QFileDialog.getExistingDirectory(self, u"Seleccionar ubicación", QDir.homePath(), QFileDialog.ShowDirsOnly)
-        print(dirName)
+        nombre = QInputDialog.getText(self, u"Nombre de la imagen ", u"Escriba el nombre de la imagen", text = "dhdicom")
+        dir_imagen_guardada = dirName + '/' + nombre[0]+".dcm"
+        
+		
 

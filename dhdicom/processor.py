@@ -22,10 +22,10 @@ class DHDicomHandler:
         # Ocultacion del EPR y autenticacion
         new_image = DicomImage(file)
         msg = json.dumps(epr)
-        data = new_image.read().astype(np.uint16)
+        data = new_image.read()
         watermarked_pixels = self.hider_handler.process(
             data, msg)
-        new_image.write(watermarked_pixels.astype(np.int16))
+        new_image.write(watermarked_pixels)
         return new_image
 
     def authenticate(self, image):
@@ -34,5 +34,4 @@ class DHDicomHandler:
     def get_epr(self, image):
         pixels = image.read()
         msg = self.hider_handler.get_msg(pixels)
-        # FIXME La longitud del mensaje se debe determinar dinámicamente
         return json.loads(msg)

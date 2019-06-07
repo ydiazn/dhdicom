@@ -89,6 +89,20 @@ def random_list(x, p, L):
     return pos
 
 
+def contracted_key(bin_seq, n=128):
+    cad = ""
+    L = []
+    if list(bin_seq).count("1") == n:
+        return bin_seq
+    elif list(bin_seq).count("1") > n:
+        for i in range(len(bin_seq)):
+            if i not in L and list(cad).count("1") != n:
+                cad += bin_seq[i]
+    else:
+        print("Error: Bits equal to 1 are not enough")
+    return cad
+
+
 # x e y are a list of integer numbers
 # bin_seq is a binary sequence
 def chaotic_positions(x, y, bin_seq):
@@ -109,39 +123,22 @@ def chaotic_permutation(x, hash_key):
     return chaotic_perm
 
 
-def pass_generator(bin_seq):
-    L = []
-    n = len(bin_seq)
-    i = 0
-    aux = False
-    while aux != True:
-        j = i * 8
-        k = (i + 1) * 8
-        res = abs(math.sin(int(bin_seq[j:k])))
-        if res < 0.5 and res not in L:
-            L.append(res)
-            if len(L) > 3:
-                aux = True
-        i += 1
-    return L
-
-
 def replace(byte_init, bit):
     if bit == '0':
-        if abs(byte_init) % 2 == 0:
+        if byte_init % 2 == 0:
             byte_fin = byte_init
-        elif abs(byte_init) % 2 == 1:
+        else:
             byte_fin = byte_init - 1
     elif bit == '1':
-        if abs(byte_init) % 2 == 0:
+        if byte_init % 2 == 0:
             byte_fin = byte_init + 1
-        elif abs(byte_init) % 2 == 1:
+        else:
             byte_fin = byte_init
     return byte_fin
 
 
 def ext_lsb(byte):
-    if abs(byte) % 2 == 0:
+    if byte % 2 == 0:
         return '0'
     return '1'
 
@@ -295,14 +292,6 @@ def increase_list(seq, n):
     return L[:n]
 
 
-def delete_elements(seq):
-    L = []
-    for i in range(len(seq)):
-        if seq[i] > 0 and seq[i] < 70:
-            L.append(seq[i])
-    return L
-
-
 def half_key(key):
     return or_operation(key[:128], key[128:])
 
@@ -337,3 +326,17 @@ def bin2dec(bin_seq):
         if bin_seq[len(bin_seq) - i - 1] != '0':
             dec_repr += 2 ** i
     return dec_repr
+
+
+def embedded_size(n, nblocks):
+    res = n % 256
+    if res == 0:
+        m = n // 256
+        L = [512 for i in range(m)]
+    else:
+        m = (n - res) // 256
+        L = [512 for i in range(m)]
+        L.append(256 + res)
+    nblocks -= len(L)
+    L.extend([256 for i in range(nblocks)])
+    return L

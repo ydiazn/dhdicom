@@ -19,6 +19,7 @@ from matplotlib.backends.backend_qt4agg import (
 from matplotlib.backends.backend_qt4agg import (
     NavigationToolbar2QT as NavigationToolbar)
 from matplotlib.figure import Figure
+from matplotlib.patches import Rectangle
 from dhdicom.helpers.blocks_class import BlocksImage
 from dhdicom.dicomi import DicomImage
 from dhdicom.epr import EPRData
@@ -29,6 +30,8 @@ import numpy as np
 from dhdicom.processor import DHDicomHandler
 from dhdicom.epr import EPRData
 from dhdicom.hidding.mixed import EPRHindingAndAuthentication
+from dhdicom.helpers.blocks_class import BlocksImage
+from dhdicom.helpers.utils import cropping_noise, random_list
 
 
 # ventana principal de la aplicacion
@@ -43,6 +46,7 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
         self.watermarked_image = None
         self. actionAbrir.triggered.connect(self.Cargar_imagen)
         self. actionSalvar.triggered.connect(self.Salvar_imagen)
+        self. actionCropping.triggered.connect(self.crop_image)
         self.btn_procesar.clicked.connect(self.Procesar_imagen)
         self.btnExtractAuthenticate.clicked.connect(self.analizar)
         self.init_canvas()
@@ -97,6 +101,7 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
     def draw_image(self, canvas, image):
         figure = canvas.figure
         ax = figure.get_axes()[0]
+        ax.clear()
 
         dimensions = (
             int(image.Rows),
@@ -121,6 +126,8 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
         )
 
         ax.set_aspect('equal', 'datalim')
+        rect = Rectangle((50,100),40,30,linewidth=1,edgecolor='r',facecolor='none')
+        ax.add_patch(rect)
         ax.pcolormesh(x, y, np.flipud(image.read()))
         canvas.draw()
 
@@ -152,6 +159,23 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
     def analizar(self):
         handler = DHDicomHandler(
             data_handler=self.epr, hider_handler=self.hider)
+
+        # Tamper dectection
+        authentic, *l = handler.authenticate(self.original_image)
+        if not authentic:
+            modified_blocks = l[0]
+            self.draw_tamper_regions(modified_blocks)
+            QMessageBox.information(
+                self,
+                u"Image authentication",
+                u"Image is not authentic. View tamper region in right image",
+            )
+        else:
+            QMessageBox.information(
+                self,
+                u"Image authentication",
+                u"Image is authentic",
+            )
         try:
             data = handler.get_epr(self.original_image)
             self.load_epr_hidden(data)
@@ -173,3 +197,31 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
         self.watermarked_canvas.draw()
         self.dicom_canvas.figure.get_axes()[0].clear()
         self.dicom_canvas.draw()
+
+    def crop_image(self):
+        x0, p, n = 0.47, 0.27, 15
+        z_block = [16, 32, 64]
+        cover_array = np.copy(self.original_image.read())
+        # Selected blocks
+        for i in range(n):
+            # Instance
+            j = z_block[i % 3]
+            if len(cover_array.shape) == 2:
+                blocks_instance = BlocksImage(cover_array, j, j)
+                L = random_list(
+                    x0, p, list(range(blocks_instance.max_num_blocks())))
+                blocks_instance.set_block(cropping_noise(
+                    blocks_instance.get_block(L[i]), j, j), L[i]
+                )
+            else:
+                blocks_instance = BlocksImage3D(cover_array, j, j)
+                L = random_list(
+                    x0, p, list(range(blocks_instance.max_num_blocks_image_3d())))
+                blocks_instance.set_block_image_3d(cropping_noise(
+                    blocks_instance.get_block_image_3d(L[i]), j, j), L[i]
+                )
+        self.original_image.write(cover_array)
+        self.draw_image(self.dicom_canvas, self.original_image)
+
+    def draw_tamper_regions(self, blocks):
+        pass

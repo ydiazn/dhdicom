@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# GDCM library
-apt-get install python-gdcm
-apt-get install python3-tk
+# pyqt4
+apt-get install python-qt4
 

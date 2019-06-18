@@ -102,33 +102,7 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
         figure = canvas.figure
         ax = figure.get_axes()[0]
         ax.clear()
-
-        dimensions = (
-            int(image.Rows),
-            int(image.Columns)
-        )
-        spacing = (
-            float(image.PixelSpacing[0]),
-            float(image.PixelSpacing[1]),
-            float(image.SliceThickness)
-        )
-        x = np.arange(
-            0.0,
-            (dimensions[0] + 1) * spacing[0], spacing[0]
-        )
-        y = np.arange(
-            0.0,
-            (dimensions[1] + 1) * spacing[1], spacing[1]
-        )
-        z = np.arange(
-            0.0,
-            2 * spacing[2], spacing[2]
-        )
-
-        ax.set_aspect('equal', 'datalim')
-        rect = Rectangle((50,100),40,30,linewidth=1,edgecolor='r',facecolor='none')
-        ax.add_patch(rect)
-        ax.pcolormesh(x, y, np.flipud(image.read()))
+        ax.imshow(image.read())
         canvas.draw()
 
     def Procesar_imagen(self):
@@ -157,6 +131,8 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
         self.watermarked_image.save(dir_imagen_guardada)
 
     def analizar(self):
+        self.draw_image(self.watermarked_canvas, self.original_image)
+
         handler = DHDicomHandler(
             data_handler=self.epr, hider_handler=self.hider)
 
@@ -184,8 +160,6 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
                 'PatientName': None,
                 'PatientID': None
             })
-
-        self.draw_image(self.watermarked_canvas, self.original_image)
 
     def clear_canvas(self):
         self.lb_paciente_id_oculto.setText('')
@@ -223,5 +197,24 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
         self.original_image.write(cover_array)
         self.draw_image(self.dicom_canvas, self.original_image)
 
-    def draw_tamper_regions(self, blocks):
-        pass
+    def draw_tamper_regions(self, block_indexes):
+        block_image = BlocksImage(self.original_image.read(), 32, 32)
+        figure = self.watermarked_canvas.figure
+        ax = figure.get_axes()[0]
+
+        block_width = 32
+        block_height = 32
+
+        for block_index in block_indexes:
+            coords = block_image.get_coord(block_index)
+            x = coords[2]
+            y = coords[0]
+
+            rect = Rectangle(
+                (x, y), block_width, block_height,
+                linewidth=1,
+                edgecolor='r',
+                facecolor='none'
+            )
+            ax.add_patch(rect)
+        self.watermarked_canvas.draw()

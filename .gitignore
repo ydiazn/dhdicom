@@ -8,5 +8,6 @@ venv
 *.code-workspace
 .vscode
 
-# images
+# istatics
 tests/dicom
+dhdicom/static

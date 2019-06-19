@@ -45,6 +45,8 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
 
         self.original_image = None
         self.watermarked_image = None
+        self.hiddenEPRTable.setHorizontalHeaderLabels(["Register", "Value"])
+        self.eprTable.setHorizontalHeaderLabels(["Register", "Value"])
         self. actionAbrir.triggered.connect(self.Cargar_imagen)
         self. actionSalvar.triggered.connect(self.Salvar_imagen)
         self. actionCropping.triggered.connect(self.crop_image)
@@ -69,20 +71,18 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
 
     def load_epr_data(self, data):
         rows_count = len(data)
-        self.eprTable.clear()
+        self.eprTable.clearContents()
         self.eprTable.setRowCount(rows_count)
         self.eprTable.setColumnCount(2)
-        self.eprTable.setHorizontalHeaderLabels(["Register", "Value"])
         for row, key in enumerate(data):
             self.eprTable.setItem(row, 0, QTableWidgetItem(key))
             self.eprTable.setItem(row, 1, QTableWidgetItem(data[key]))
 
     def load_epr_hidden(self, data):
         rows_count = len(data)
-        self.hiddenEPRTable.clear()
+        self.hiddenEPRTable.clearContents()
         self.hiddenEPRTable.setRowCount(rows_count)
         self.hiddenEPRTable.setColumnCount(2)
-        self.eprTable.setHorizontalHeaderLabels(["Register", "Value"])
         for row, key in enumerate(data):
             self.hiddenEPRTable.setItem(row, 0, QTableWidgetItem(key))
             self.hiddenEPRTable.setItem(row, 1, QTableWidgetItem(data[key]))
@@ -180,21 +180,14 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
         else:
             message = "Image is authentic."
 
-        QMessageBox.information(
-                self,
-                u"Image authentication",
-                message,
-            )
-
         # Extraccion del EPR
         try:
             data = handler.get_epr(self.original_image)
             self.load_epr_hidden(data)
         except json.JSONDecodeError:
-            self.load_epr_hidden({
-                'PatientName': None,
-                'PatientID': None
-            })
+            self.hiddenEPRTable.clearContents()
+
+        QMessageBox.information(self, "Image authentication", message)
 
     def clear_canvas(self):
         pass

@@ -32,6 +32,7 @@ from dhdicom.epr import EPRData
 from dhdicom.hidding.mixed import EPRHindingAndAuthentication
 from dhdicom.helpers.blocks_class import BlocksImage
 from dhdicom.helpers.utils import cropping_noise, random_list
+from dhdicom import settings
 
 
 # ventana principal de la aplicacion
@@ -53,10 +54,7 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
 
         # Registros EPR
         base = os.path.dirname(os.path.dirname(__file__))
-        self.epr = EPRData(
-            ['PatientID', 'PatientName'],
-            os.path.join(base, 'recipes/confidential')
-        )
+        self.epr = EPRData(settings.EPR_TO_HIDE, settings.RECIPE_FILE)
         self.hider = EPRHindingAndAuthentication('nuevaclave')
 
     def Cargar_imagen(self):

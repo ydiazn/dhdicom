@@ -109,7 +109,7 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
         ouput = QInputDialog.getText(
             self,
             u"Hiding EPR",
-            u"Write a key",
+            u"Enter a password",
             text=""
         )
         clave = ouput[0]
@@ -142,7 +142,7 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
         output = QInputDialog.getText(
             self,
             u"Hiding EPR",
-            u"Write a key",
+            u"Enter a password",
             text=""
         )
         clave = output[0]
@@ -154,20 +154,33 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
 
         # Tamper dectection
         authentic, *l = handler.authenticate(self.original_image)
+
         if not authentic:
+            block_manager = BlocksImage(self.original_image.read(), 32, 32)
+            total_blocks = block_manager.max_num_blocks()
             modified_blocks = l[0]
-            self.draw_tamper_regions(modified_blocks)
-            QMessageBox.information(
-                self,
-                u"Image authentication",
-                u"Image is not authentic. View tamper region in right image",
-            )
+            if modified_blocks:
+                self.draw_tamper_regions(modified_blocks)
+            image_modification = len(modified_blocks) / total_blocks
+
+            if image_modification > 0.9:
+                message = "Image is not authentic or its " \
+                    "authenticity could not to be verified. " \
+                    "View tamper region in right image. " \
+                    "Make sure the password is correct."
+            else:
+                message = "Image is not authentic." \
+                    "View tamper region in right image."
         else:
-            QMessageBox.information(
+            message = "Image is authentic."
+
+        QMessageBox.information(
                 self,
                 u"Image authentication",
-                u"Image is authentic",
+                message,
             )
+
+        # Extraccion del EPR
         try:
             data = handler.get_epr(self.original_image)
             self.load_epr_hidden(data)

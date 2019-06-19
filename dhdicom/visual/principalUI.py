@@ -68,16 +68,24 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
         self.load_epr_data(data)
 
     def load_epr_data(self, data):
-        patient_id = data['PatientID'] or 'undefinied'
-        patient_name = data['PatientName'] or 'undefinied'
-        self.lb_paciente_id.setText(patient_id)
-        self.lb_paciente_name.setText(patient_name)
+        rows_count = len(data)
+        self.eprTable.clear()
+        self.eprTable.setRowCount(rows_count)
+        self.eprTable.setColumnCount(2)
+        self.eprTable.setHorizontalHeaderLabels(["Register", "Value"])
+        for row, key in enumerate(data):
+            self.eprTable.setItem(row, 0, QTableWidgetItem(key))
+            self.eprTable.setItem(row, 1, QTableWidgetItem(data[key]))
 
     def load_epr_hidden(self, data):
-        patient_id = data['PatientID'] or 'undefinied'
-        patient_name = data['PatientName'] or 'undefinied'
-        self.lb_paciente_id_oculto.setText(patient_id)
-        self.lb_paciente_name_oculto.setText(patient_name)
+        rows_count = len(data)
+        self.hiddenEPRTable.clear()
+        self.hiddenEPRTable.setRowCount(rows_count)
+        self.hiddenEPRTable.setColumnCount(2)
+        self.eprTable.setHorizontalHeaderLabels(["Register", "Value"])
+        for row, key in enumerate(data):
+            self.hiddenEPRTable.setItem(row, 0, QTableWidgetItem(key))
+            self.hiddenEPRTable.setItem(row, 1, QTableWidgetItem(data[key]))
 
     def init_canvas(self):
         pyplot.set_cmap(pyplot.gray())
@@ -189,15 +197,7 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
             })
 
     def clear_canvas(self):
-        self.lb_paciente_id_oculto.setText('')
-        self.lb_paciente_name_oculto.setText('')
-        self.lb_paciente_id.setText('')
-        self.lb_paciente_name.setText('')
-
-        self.watermarked_canvas.figure.get_axes()[0].clear()
-        self.watermarked_canvas.draw()
-        self.dicom_canvas.figure.get_axes()[0].clear()
-        self.dicom_canvas.draw()
+        pass
 
     def crop_image(self):
         x0, p, n = 0.47, 0.27, 15

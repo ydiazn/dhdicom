@@ -7,3 +7,6 @@ venv
 # Visual studio code
 *.code-workspace
 .vscode
+
+# images
+tests/dicom

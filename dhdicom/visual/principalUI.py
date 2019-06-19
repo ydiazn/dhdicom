@@ -106,8 +106,16 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
         canvas.draw()
 
     def Procesar_imagen(self):
+        ouput = QInputDialog.getText(
+            self,
+            u"Hiding EPR",
+            u"Write a key",
+            text=""
+        )
+        clave = ouput[0]
+        hider = EPRHindingAndAuthentication(clave)
         handler = DHDicomHandler(
-            data_handler=self.epr, hider_handler=self.hider)
+            data_handler=self.epr, hider_handler=hider)
         image = handler.process(self.original_image)
         self.draw_image(self.watermarked_canvas, image)
         self.load_epr_data(self.epr.read(image))
@@ -131,10 +139,18 @@ class VentanaPrincipal(QMainWindow, Ui_Pruebas):
         self.watermarked_image.save(dir_imagen_guardada)
 
     def analizar(self):
+        output = QInputDialog.getText(
+            self,
+            u"Hiding EPR",
+            u"Write a key",
+            text=""
+        )
+        clave = output[0]
+        hider = EPRHindingAndAuthentication(clave)
         self.draw_image(self.watermarked_canvas, self.original_image)
 
         handler = DHDicomHandler(
-            data_handler=self.epr, hider_handler=self.hider)
+            data_handler=self.epr, hider_handler=hider)
 
         # Tamper dectection
         authentic, *l = handler.authenticate(self.original_image)
